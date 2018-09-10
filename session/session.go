@@ -39,6 +39,7 @@ func (manager *Manager) SessionStart(w http.ResponseWriter, r *http.Request) (se
 		session, _ = manager.provider.SessionInit(sid)
 		cookie := http.Cookie{Name:manager.cookieName, Value:url.QueryEscape(sid), Path:"/", HttpOnly:true, MaxAge: int(manager.maxlifetime)}
 		http.SetCookie(w, &cookie)
+		
 	 } else {
 		 sid, _ := url.QueryUnescape(cookie.Value)
 		 session, _ = manager.provider.SessionRead(sid)
@@ -84,7 +85,3 @@ func NewManager(provideName, cookieName string, maxlifetime int64) (*Manager, er
 	return &Manager{provider:provider, cookieName: cookieName, maxlifetime:maxlifetime}, nil 
 }
 
-func init(){
-
-
-}

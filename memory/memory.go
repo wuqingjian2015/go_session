@@ -52,7 +52,8 @@ func (pder *Provider) SessionInit(sid string) (session.Session, error){
 	defer pder.lock.Unlock()
 	v := make(map[interface{}]interface{}, 0)
 	newSess := &SessionStore{sid:sid, timeAccessed: time.Now(), value:v}
-	pder.list.PushBack(newSess)
+	element := pder.list.PushBack(newSess)
+	pder.sessions[sid] = element  
 	return newSess, nil 
 }
 func (pder *Provider) SessionRead(sid string) (session.Session, error){

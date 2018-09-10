@@ -37,7 +37,7 @@ func index(w http.ResponseWriter, r *http.Request){
 	
 }
 func init(){
-	globalSession, err := session.NewManager("memory", "gosessionid", 3600)
+	globalSession, err := session.NewManager("memory", "gosessionid", 360000)
 	// go globalSession.GC()
 	globalSession1 = globalSession; 
 	if err != nil {
@@ -47,7 +47,7 @@ func init(){
 	fmt.Println(globalSession)
 }
 type User struct{
-	username string 
+	UserName string 
 }
 func login(w http.ResponseWriter, r *http.Request){
 	sess := globalSession1.SessionStart(w, r)
@@ -59,7 +59,7 @@ func login(w http.ResponseWriter, r *http.Request){
 		if u != nil {
 			v := fmt.Sprintf("%v", u)
 			fmt.Println(v)
-			t.Execute(w, &User{username:v} )
+			t.Execute(w, &User{UserName:v} )
 		} else {
 			// fmt.Println(&User{username:v})
 			fmt.Println(u)
@@ -71,6 +71,9 @@ func login(w http.ResponseWriter, r *http.Request){
 		sess.Set("username", r.Form.Get("username"))
 		fmt.Println(sess)
 		fmt.Println(sess.Get("username"))
+		t, _ := template.ParseFiles("shop.gtpl")
+		// w.Header().Set("Content-Type", "text/html")
+		t.Execute(w, User{UserName:r.Form.Get("username")})
 
 		http.Redirect(w, r, "/", 302)
 	}
@@ -84,6 +87,6 @@ func count(w http.ResponseWriter, r *http.Request){
 		sess.Set("countnum", ct.(int) + 1)
 	}
 	t, _:= template.ParseFiles("count.gtpl")
-	w.Header().Set("Content-Type", "text/html")
+	// w.Header().Set("Content-Type", "text/html")
 	t.Execute(w, sess.Get("countnum"))
 }
